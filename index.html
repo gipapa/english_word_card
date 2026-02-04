@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TSMC 英文單字卡（離線版）</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: rgba(255,255,255,0.06);
+      --panel2: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.68);
+      --border: rgba(255,255,255,0.14);
+      --shadow: 0 18px 50px rgba(0,0,0,0.45);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 10% 10%, rgba(120,120,255,0.18), transparent),
+                  radial-gradient(900px 600px at 90% 30%, rgba(0,220,255,0.14), transparent),
+                  radial-gradient(900px 600px at 40% 95%, rgba(255,120,200,0.10), transparent),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .app {
+      width: min(980px, 100%);
+      display: grid;
+      gap: 16px;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--panel), transparent);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .title {
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .title h1 {
+      font-size: 18px;
+      margin: 0;
+      letter-spacing: 0.2px;
+    }
+    .title .meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    input[type="search"], select {
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      outline: none;
+    }
+    input[type="search"]::placeholder { color: rgba(255,255,255,0.55); }
+    button {
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      cursor: pointer;
+    }
+    button:hover { background: rgba(255,255,255,0.12); }
+    .main {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+    }
+    @media (max-width: 860px) {
+      .main { grid-template-columns: 1fr; }
+    }
+    .card {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--panel2), rgba(255,255,255,0.04));
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      padding: 18px;
+      min-height: 320px;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -60px;
+      background: radial-gradient(200px 120px at 30% 20%, rgba(255,255,255,0.10), transparent 60%),
+                  radial-gradient(240px 160px at 80% 70%, rgba(255,255,255,0.08), transparent 65%);
+      transform: rotate(8deg);
+      pointer-events: none;
+    }
+    .word {
+      font-size: clamp(28px, 4.5vw, 44px);
+      font-weight: 750;
+      letter-spacing: 0.6px;
+      text-align: center;
+      z-index: 1;
+    }
+    .note {
+      font-size: 14px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+      max-width: 46ch;
+      z-index: 1;
+    }
+    .badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(0,0,0,0.22);
+      color: rgba(255,255,255,0.78);
+      z-index: 2;
+    }
+    .stat {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 12px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(0,0,0,0.22);
+      color: rgba(255,255,255,0.78);
+      z-index: 2;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      z-index: 2;
+      margin-top: 6px;
+    }
+    .side {
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.06);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      padding: 14px 14px 12px 14px;
+    }
+    .panel h2 {
+      font-size: 14px;
+      margin: 0 0 10px 0;
+      color: rgba(255,255,255,0.86);
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-top: 1px solid rgba(255,255,255,0.10);
+      font-size: 13px;
+      color: rgba(255,255,255,0.78);
+    }
+    .row:first-of-type { border-top: 0; }
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    a { color: rgba(150,220,255,0.95); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      padding: 2px 6px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-bottom-color: rgba(255,255,255,0.28);
+      border-radius: 8px;
+      background: rgba(0,0,0,0.25);
+      color: rgba(255,255,255,0.85);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="title">
+        <h1>TSMC 英文單字卡（離線版）</h1>
+        <div class="meta">載入 <span id="count">0</span> 個單字｜<span class="kbd">Space</span> 翻面 <span class="kbd">←/→</span> 上一個/下一個 <span class="kbd">S</span> 亂數</div>
+      </div>
+      <div class="controls">
+        <input id="q" type="search" placeholder="搜尋單字 (e.g., yield, audit, deploy)..." />
+        <select id="cat">
+          <option value="all">全部類別</option>
+          <option value="semiconductor">semiconductor</option>
+          <option value="general">general</option>
+        </select>
+        <button id="shuffle">亂數</button>
+        <button id="prev">上一個</button>
+        <button id="next">下一個</button>
+      </div>
+    </header>
+
+    <div class="main">
+      <div class="card" id="flashcard" tabindex="0" role="button" aria-label="flashcard">
+        <div class="badge" id="badge">—</div>
+        <div class="stat" id="stat">0 / 0</div>
+        <div class="word" id="word">Loading…</div>
+        <div class="note" id="note">點卡片或按 <span class="kbd">Space</span> 翻面。你也可以用上方搜尋快速跳到單字。</div>
+        <div class="actions">
+          <button id="toggle">翻面</button>
+          <button id="markKnown">已會（✓）</button>
+          <button id="markUnknown">待加強（★）</button>
+          <button id="clearMarks">清除標記</button>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="panel">
+          <h2>進度</h2>
+          <div class="row"><span>已會（✓）</span><span id="knownCount">0</span></div>
+          <div class="row"><span>待加強（★）</span><span id="unknownCount">0</span></div>
+          <div class="row"><span>目前篩選</span><span id="filteredCount">0</span></div>
+          <div class="small">標記會儲存在你的瀏覽器（LocalStorage），關掉網頁不會消失。</div>
+        </div>
+
+        <div class="panel">
+          <h2>使用方式</h2>
+          <div class="small">
+            <ul>
+              <li>點卡片或按 <span class="kbd">Space</span> 翻面（正面：單字／背面：備註）。</li>
+              <li>用搜尋框輸入關鍵字可快速定位。</li>
+              <li>類別可切換 <span class="kbd">semiconductor</span> / <span class="kbd">general</span>。</li>
+              <li>可自行在 <code>words.json</code> 增補 <code>note</code>（例如中文解釋、例句）。</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>離線使用</h2>
+          <div class="small">
+            把本資料夾整個放到你的電腦後，直接用瀏覽器開啟 <code>index.html</code> 即可。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  const state = {
+    all: [],
+    filtered: [],
+    i: 0,
+    face: "front", // front: word, back: note
+    marks: { known: new Set(), unknown: new Set() },
+  };
+
+  function loadMarks() {
+    try {
+      const raw = localStorage.getItem("tsmc_vocab_marks_v1");
+      if (!raw) return;
+      const obj = JSON.parse(raw);
+      state.marks.known = new Set(obj.known || []);
+      state.marks.unknown = new Set(obj.unknown || []);
+    } catch (e) {}
+  }
+
+  function saveMarks() {
+    const obj = {
+      known: Array.from(state.marks.known),
+      unknown: Array.from(state.marks.unknown),
+    };
+    localStorage.setItem("tsmc_vocab_marks_v1", JSON.stringify(obj));
+  }
+
+  function applyFilter() {
+    const q = $("q").value.trim().toLowerCase();
+    const cat = $("cat").value;
+
+    state.filtered = state.all.filter(item => {
+      if (cat !== "all" && item.category !== cat) return false;
+      if (!q) return true;
+      const hay = (item.word + " " + (item.note || "")).toLowerCase();
+      return hay.includes(q);
+    });
+
+    if (state.filtered.length === 0) {
+      $("word").textContent = "查無結果";
+      $("note").textContent = "換個關鍵字試試看。";
+      $("badge").textContent = "—";
+      $("stat").textContent = "0 / 0";
+      $("filteredCount").textContent = "0";
+      return;
+    }
+
+    // keep current word if still in filtered, else reset
+    const cur = state.filtered[state.i]?.word;
+    if (!cur || !state.filtered.some(x => x.word === cur)) {
+      state.i = 0;
+    }
+    $("filteredCount").textContent = String(state.filtered.length);
+    render();
+  }
+
+  function current() {
+    return state.filtered[state.i] || null;
+  }
+
+  function markBadge(word) {
+    const known = state.marks.known.has(word);
+    const unknown = state.marks.unknown.has(word);
+    if (known) return "✓ 已會";
+    if (unknown) return "★ 待加強";
+    return "— 未標記";
+  }
+
+  function render() {
+    const item = current();
+    if (!item) return;
+
+    $("badge").textContent = markBadge(item.word);
+    $("stat").textContent = `${state.i + 1} / ${state.filtered.length}`;
+
+    if (state.face === "front") {
+      $("word").textContent = item.word;
+      $("note").innerHTML = `類別：<b>${item.category}</b><br><span style="opacity:.85">（點卡片或按 Space 翻面看備註）</span>`;
+    } else {
+      $("word").textContent = item.word;
+      $("note").textContent = (item.note && item.note.trim()) ? item.note : "（目前沒有備註。你可以在 words.json 補上中文解釋/例句。）";
+    }
+
+    $("knownCount").textContent = String(state.marks.known.size);
+    $("unknownCount").textContent = String(state.marks.unknown.size);
+  }
+
+  function next(delta) {
+    if (state.filtered.length === 0) return;
+    state.i = (state.i + delta + state.filtered.length) % state.filtered.length;
+    state.face = "front";
+    render();
+  }
+
+  function shuffle() {
+    if (state.filtered.length === 0) return;
+    state.i = Math.floor(Math.random() * state.filtered.length);
+    state.face = "front";
+    render();
+  }
+
+  function flip() {
+    state.face = (state.face === "front") ? "back" : "front";
+    render();
+  }
+
+  function mark(kind) {
+    const item = current();
+    if (!item) return;
+    const w = item.word;
+
+    if (kind === "known") {
+      state.marks.unknown.delete(w);
+      state.marks.known.add(w);
+    } else {
+      state.marks.known.delete(w);
+      state.marks.unknown.add(w);
+    }
+    saveMarks();
+    render();
+  }
+
+  function clearMarks() {
+    state.marks.known.clear();
+    state.marks.unknown.clear();
+    saveMarks();
+    render();
+  }
+
+  async function boot() {
+    loadMarks();
+    const res = await fetch("./words.json");
+    const data = await res.json();
+    state.all = data.items || [];
+    $("count").textContent = String(state.all.length);
+    state.filtered = state.all.slice();
+    $("filteredCount").textContent = String(state.filtered.length);
+    render();
+  }
+
+  // Events
+  $("q").addEventListener("input", applyFilter);
+  $("cat").addEventListener("change", applyFilter);
+  $("next").addEventListener("click", () => next(1));
+  $("prev").addEventListener("click", () => next(-1));
+  $("shuffle").addEventListener("click", shuffle);
+  $("toggle").addEventListener("click", flip);
+  $("flashcard").addEventListener("click", flip);
+  $("markKnown").addEventListener("click", () => mark("known"));
+  $("markUnknown").addEventListener("click", () => mark("unknown"));
+  $("clearMarks").addEventListener("click", clearMarks);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight") next(1);
+    if (e.key === "ArrowLeft") next(-1);
+    if (e.code === "Space") { e.preventDefault(); flip(); }
+    if (e.key.toLowerCase() === "s") shuffle();
+  });
+
+  boot();
+</script>
+</body>
+</html>
